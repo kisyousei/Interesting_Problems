@@ -31,6 +31,7 @@ piles.length is even.
 sum(piles) is odd.
 
 解法1：
+动态规划
 因为探索空间比较大，遍历所有可能性会超时，考虑使用dp来存储已计算的状态
 
 dp[i][j]表示在下标i到j之间，先手玩家可以比后手玩家获得的更多的石头。
@@ -38,15 +39,47 @@ dp[i][j]表示在下标i到j之间，先手玩家可以比后手玩家获得的�
 如果先手玩家选择piles[i]，那么有
   dp[i][j]= 先手玩家获得的石头-后手玩家获得的石头
           = { dp[i](先手玩家拿了piles[i]) + 先手玩家在i+1到j之间能拿到的所有石头 } - 后手玩家在i+1到j之间能拿到的所有石头
-          = dp[i] - 后手玩家在i+1到j之间能拿到的所有石头 + 先手玩家在i+1到j之间能拿到的所有石头
-          = dp[i] - (后手玩家在i+1到j之间能拿到的所有石头 - 先手玩家在i+1到j之间能拿到的所有石头)
-          = dp[i] - dp[i+1][j]
+          = piles[i] - 后手玩家在i+1到j之间能拿到的所有石头 + 先手玩家在i+1到j之间能拿到的所有石头
+          = piles[i] - (后手玩家在i+1到j之间能拿到的所有石头 - 先手玩家在i+1到j之间能拿到的所有石头)
+          = piles[i] - dp[i+1][j]
 同理如果先手玩家选择piles[j],那么有
-  dp[i][j]= dp[j] - dp[i][j-1]
+  dp[i][j]= piles[j] - dp[i][j-1]
 
 显然的，由于游戏里两名玩家都是尝试选择最优的方式赢得游戏，于是有
-dp[i][j]=Math.max(dp[i] - dp[i+1][j], dp[j] - dp[i][j-1])
+dp[i][j]=Math.max(piles[i] - dp[i+1][j], piles[j] - dp[i][j-1])
 
-有了这个递推方程，我们的解法1就呼之欲出了
-          
-          
+有了这个递推方程，我们的解法1就呼之欲出了：
+
+boolean stoneGame(int[] piles){
+  int [][] dp=new int[piles.length][piles.length];  
+  for (int j=0;j<piles.length;j++){
+       for (int i=j;i>=0;i--){
+          if (i==j) dp[i][j]=piles[i];
+          else
+              dp[i][j]=Math.max(piles[i]-dp[i+1][j],piles[j]-dp[i][j-1]);
+       }
+  }
+  return dp[0][piles.length-1]>0;
+} 
+
+值得注意的是这里的填充顺序，斜向从左上角开始折返填充,这里是 0 -> 5 -> 1 -> 10 -> 6 -> 2 -> 15 -> 11 -> 7 -> 3
+0  1  2  3 
+4  5  6  7
+8  9  10 11
+12 13 14 15
+
+由于3是最后一个求的，于是显然有另一个顺序从右下角开始 15 -> 10 -> 11 ->5 -> 6 -> 7 -> 0 -> 1 -> 2 -> 3
+可以写成
+    for (int i=piles.length-1;i>=0;i--){
+        	for (int j=i;j<piles.length;j++){
+        		 if (i==j) dp[i][j]=piles[i];
+        		 else
+        			    dp[i][j]=Math.max(piles[i]-dp[i+1][j],piles[j]-dp[i][j-1]);
+        	}
+    }
+
+解法2
+递归+memoization
+
+解法3
+数学
