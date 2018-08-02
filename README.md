@@ -1,7 +1,9 @@
 # Interesting_Problems
 一些有意思的问题
-==========
-1. leetcode #877 Stone Game
+===============
+
+1.leetcode #877 Stone Game
+-------------------------
 
 Alex and Lee play a game with piles of stones.  There are an even number of piles arranged in a row, and each pile has a positive integer number of stones piles[i].
 
@@ -30,8 +32,8 @@ piles.length is even.
 1 <= piles[i] <= 500
 sum(piles) is odd.
 
-解法1：
-动态规划
+解法1：动态规划
+
 因为探索空间比较大，遍历所有可能性会超时，考虑使用dp来存储已计算的状态
 
 dp[i][j]表示在下标i到j之间，先手玩家可以比后手玩家获得的更多的石头。
@@ -66,6 +68,7 @@ dp[i][j]=Math.max(piles[i] - dp[i+1][j], piles[j] - dp[i][j-1])
         
     }
 ```
+
 值得注意的是这里的填充顺序，假设dp是一个4x4的矩阵，斜向从左上角开始折返填充,这里是 0 -> 5 -> 1 -> 10 -> 6 -> 2 -> 15 -> 11 -> 7 -> 3
 ```
 0  1  2  3 
@@ -73,7 +76,6 @@ dp[i][j]=Math.max(piles[i] - dp[i+1][j], piles[j] - dp[i][j-1])
 8  9  10 11
 12 13 14 15
 ```
-
 由于3是最后一个求的，于是显然有另一个顺序从右下角开始 15 -> 10 -> 11 ->5 -> 6 -> 7 -> 0 -> 1 -> 2 -> 3
 可以写成
 ```Java      
@@ -101,7 +103,8 @@ dp[i][j]=Math.max(piles[i] - dp[i+1][j], piles[j] - dp[i][j-1])
         return d[0]>0;
     }
 ```
-解法2
+
+解法2 
 递归+memoization
 ```Java
     public boolean stoneGame2(int[] piles) {
@@ -136,8 +139,9 @@ dp[i][j]=Math.max(piles[i] - dp[i+1][j], piles[j] - dp[i][j-1])
     	}
     }
 ```
-解法3
+解法3 
 数学
+
 题中给出条件，
 ```
 石头的堆数是偶数堆，说明最终两个人可以拿到同样堆数的石头；
@@ -158,7 +162,7 @@ dp[i][j]=Math.max(piles[i] - dp[i+1][j], piles[j] - dp[i][j-1])
 
 因此先手玩家的必胜法只需要预先计算所有奇数位堆的石头总数和所有偶数位堆的石头总数，然后选择去拿走总数更多的那一种拿法即可(拿走所有奇数位或者偶数位)
 也就是说先手玩家必胜，于是有：
-```Java
+
 public boolean stoneGame4(int[] piles){
     return true;
 }
