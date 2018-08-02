@@ -78,8 +78,53 @@ boolean stoneGame(int[] piles){
         	}
     }
 
+存储空间也可以进一步优化为一维数组
+public boolean stoneGame(int[] piles) {
+    int [] d=new int[piles.length];
+    System.arraycopy(piles, 0, d, 0, piles.length);
+    for (int j=0;j<piles.length;j++){
+        for (int i=j;i>=0;i--){
+        		if (i!=j)
+        			d[i]=Math.max(piles[i]-d[i+1],piles[j]-d[i]);
+        }
+    }
+    return d[0]>0;
+}  
+
 解法2
 递归+memoization
+
+    public boolean stoneGame2(int[] piles) {
+    	cache=new int[piles.length][piles.length];
+    	int sum=0;
+    	
+    	for (int i=0;i<piles.length;i++){
+    		for (int j=0;j<piles.length;j++){
+    			cache[i][j]=-1;
+    		}
+    		sum+=piles[i];
+    	}
+    		
+    	int alex=maxStoneBetween(piles,0,piles.length-1);
+    	int lee=sum-alex;
+    	return alex>lee;
+    }
+    
+    
+    public int maxStoneBetween(int[] a, int head, int tail){
+    	if (head>=tail){
+    		return 0;
+    	}else if (tail==head+1 && tail<a.length){
+    		if (a[head]>a[tail]) return a[head];
+    		else return a[tail];
+    	}else{
+    		if (cache[head][tail]!=-1) return cache[head][tail];
+    		int res=Math.max(a[head]+Math.min(maxStoneBetween(a,head+2,tail),maxStoneBetween(a,head+1,tail-1)),
+    						 a[tail]+Math.min(maxStoneBetween(a,head+1,tail-1), maxStoneBetween(a,head,tail-2)));
+    		cache[head][tail]=res;
+    		return res;
+    	}
+    }
 
 解法3
 数学
