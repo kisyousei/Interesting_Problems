@@ -50,17 +50,19 @@ dp[i][j]=Math.max(piles[i] - dp[i+1][j], piles[j] - dp[i][j-1])
 
 有了这个递推方程，我们的解法1就呼之欲出了：
 
-boolean stoneGame(int[] piles){
-  int [][] dp=new int[piles.length][piles.length];  
-  for (int j=0;j<piles.length;j++){
-       for (int i=j;i>=0;i--){
-          if (i==j) dp[i][j]=piles[i];
-          else
-              dp[i][j]=Math.max(piles[i]-dp[i+1][j],piles[j]-dp[i][j-1]);
-       }
-  }
-  return dp[0][piles.length-1]>0;
-} 
+    public boolean stoneGame(int[] piles){
+        int [][] dp=new int[piles.length][piles.length];
+        //从左上角出发，斜向折叠
+        for (int j=0;j<piles.length;j++){
+            for (int i=j;i>=0;i--){
+            		if (i==j) dp[i][j]=piles[i];
+            		else
+            			dp[i][j]=Math.max(piles[i]-dp[i+1][j],piles[j]-dp[i][j-1]);
+            }
+        }
+        return dp[0][piles.length-1]>0;
+        
+    }
 
 值得注意的是这里的填充顺序，斜向从左上角开始折返填充,这里是 0 -> 5 -> 1 -> 10 -> 6 -> 2 -> 15 -> 11 -> 7 -> 3
 0  1  2  3 
@@ -70,26 +72,30 @@ boolean stoneGame(int[] piles){
 
 由于3是最后一个求的，于是显然有另一个顺序从右下角开始 15 -> 10 -> 11 ->5 -> 6 -> 7 -> 0 -> 1 -> 2 -> 3
 可以写成
-    for (int i=piles.length-1;i>=0;i--){
+        
+        //从右下角出发，斜向折叠
+        for (int i=piles.length-1;i>=0;i--){
         	for (int j=i;j<piles.length;j++){
-        		 if (i==j) dp[i][j]=piles[i];
-        		 else
-        			    dp[i][j]=Math.max(piles[i]-dp[i+1][j],piles[j]-dp[i][j-1]);
+        		if (i==j) dp[i][j]=piles[i];
+        		else
+        			dp[i][j]=Math.max(piles[i]-dp[i+1][j],piles[j]-dp[i][j-1]);
         	}
-    }
+        }
 
 存储空间也可以进一步优化为一维数组
-public boolean stoneGame(int[] piles) {
-    int [] d=new int[piles.length];
-    System.arraycopy(piles, 0, d, 0, piles.length);
-    for (int j=0;j<piles.length;j++){
-        for (int i=j;i>=0;i--){
+
+    public boolean stoneGame(int[] piles){
+    	int [] d=new int[piles.length];
+        System.arraycopy(piles, 0, d, 0, piles.length);
+        for (int j=0;j<piles.length;j++){
+            for (int i=j;i>=0;i--){
         		if (i!=j)
         			d[i]=Math.max(piles[i]-d[i+1],piles[j]-d[i]);
+        	}
         }
+        printArray(d);
+        return d[0]>0;
     }
-    return d[0]>0;
-}  
 
 解法2
 递归+memoization
