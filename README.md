@@ -66,7 +66,7 @@ dp[i][j]=Math.max(piles[i] - dp[i+1][j], piles[j] - dp[i][j-1])
         
     }
 ```
-值得注意的是这里的填充顺序，斜向从左上角开始折返填充,这里是 0 -> 5 -> 1 -> 10 -> 6 -> 2 -> 15 -> 11 -> 7 -> 3
+值得注意的是这里的填充顺序，假设dp是一个4x4的矩阵，斜向从左上角开始折返填充,这里是 0 -> 5 -> 1 -> 10 -> 6 -> 2 -> 15 -> 11 -> 7 -> 3
 ```
 0  1  2  3 
 4  5  6  7
@@ -76,7 +76,7 @@ dp[i][j]=Math.max(piles[i] - dp[i+1][j], piles[j] - dp[i][j-1])
 
 由于3是最后一个求的，于是显然有另一个顺序从右下角开始 15 -> 10 -> 11 ->5 -> 6 -> 7 -> 0 -> 1 -> 2 -> 3
 可以写成
-        
+```Java      
         //从右下角出发，斜向折叠
         for (int i=piles.length-1;i>=0;i--){
         	for (int j=i;j<piles.length;j++){
@@ -85,9 +85,9 @@ dp[i][j]=Math.max(piles[i] - dp[i+1][j], piles[j] - dp[i][j-1])
         			dp[i][j]=Math.max(piles[i]-dp[i+1][j],piles[j]-dp[i][j-1]);
         	}
         }
-
+```
 存储空间也可以进一步优化为一维数组
-
+```Java
     public boolean stoneGame(int[] piles){
     	int [] d=new int[piles.length];
         System.arraycopy(piles, 0, d, 0, piles.length);
@@ -100,10 +100,10 @@ dp[i][j]=Math.max(piles[i] - dp[i+1][j], piles[j] - dp[i][j-1])
         printArray(d);
         return d[0]>0;
     }
-
+```
 解法2
 递归+memoization
-
+```Java
     public boolean stoneGame2(int[] piles) {
     	cache=new int[piles.length][piles.length];
     	int sum=0;
@@ -135,6 +135,32 @@ dp[i][j]=Math.max(piles[i] - dp[i+1][j], piles[j] - dp[i][j-1])
     		return res;
     	}
     }
-
+```
 解法3
 数学
+题中给出条件，
+```
+石头的堆数是偶数堆，说明最终两个人可以拿到同样堆数的石头；
+石头的总数为基数，说明两个人拿到的两堆石头一定不会相等，因为显然 
+奇数 mod 2!=0
+而玩家1可以保证先手，说明玩家1可以主动选择从奇数位开始拿并且拿走所有奇数位的石头堆，
+                                   或者从偶数位开始拿并且拿走所有偶数位的石头堆。
+例如
+有石头堆
+    [ 5 , 3 , 4 , 5 ]
+位数  1   2   3   4
+
+先手玩家选择拿所有奇数位的石头堆，那么他可以拿走1号位的'5'，盘面变成
+    [   , 3 , 4 , 5 ]
+位数  1   2   3   4
+
+此时后手玩家无论选择2号位的'3'或者4号位的'5'都无法阻止先手玩家继续拿奇数位3号位的'4'
+
+因此先手玩家的必胜法只需要预先计算所有奇数位堆的石头总数和所有偶数位堆的石头总数，然后选择去拿走总数更多的那一种拿法即可(拿走所有奇数位或者偶数位)
+也就是说先手玩家必胜，于是有：
+```Java
+public boolean stoneGame4(int[] piles){
+    return true;
+}
+```
+
