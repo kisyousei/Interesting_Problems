@@ -89,7 +89,8 @@ dp[i][j]=Math.max(piles[i] - dp[i+1][j], piles[j] - dp[i][j-1])
         	}
         }
 ```
-存储空间也可以进一步优化为一维数组
+
+存储空间进一步优化为一维数组的版本如下
 ```Java
     public boolean stoneGame(int[] piles){
     	int [] d=new int[piles.length];
@@ -100,14 +101,13 @@ dp[i][j]=Math.max(piles[i] - dp[i+1][j], piles[j] - dp[i][j-1])
         			d[i]=Math.max(piles[i]-d[i+1],piles[j]-d[i]);
         	}
         }
-        printArray(d);
         return d[0]>0;
     }
 ```
 --------------
 * 解法2 递归+memoization
 ```Java
-    public boolean stoneGame2(int[] piles) {
+    public boolean stoneGame(int[] piles) {
     	cache=new int[piles.length][piles.length];
     	int sum=0;
     	
@@ -171,7 +171,7 @@ dp[i][j]=Math.max(piles[i] - dp[i+1][j], piles[j] - dp[i][j-1])
 由此可知先手玩家的必胜法只需要预先计算所有奇数位堆的石头总数和所有偶数位堆的石头总数，然后选择去拿走总数更多的那一种拿法即可(拿走所有奇数位或者偶数位)
 也就是说先手玩家必胜，于是有：
 ```Java
-public boolean stoneGame4(int[] piles){
+public boolean stoneGame(int[] piles){
     return true;
 }
 ```
